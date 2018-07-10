@@ -1,11 +1,14 @@
 <?php
 
-namespace Watson\Rememberable;
+namespace Ilcontabile\Rememberable;
 
-use Watson\Rememberable\Query\Builder;
+use Ilcontabile\Rememberable\Query\Builder;
+use Illuminate\Support\Facades\Cache;
 
 trait Rememberable
 {
+    protected $builderInstance;
+    
     /**
      * Get a new query builder instance for the connection.
      *
@@ -35,6 +38,14 @@ trait Rememberable
             $builder->cacheDriver($this->rememberCacheDriver);
         }
 
+        $this->builderInstance = &$builder;
+
         return $builder;
+    }
+    
+    /* Forget current cached key */
+    public function forget()
+    {
+        Cache::forget($this->builderInstance->getCacheKey());
     }
 }
